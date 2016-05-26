@@ -9,9 +9,10 @@ import {
 } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs';
+import {SearchResult} from "./search-result.model";
 
-const YOUTUBE_API_KEY: string = "XXX_YOUR_KEY_HERE";
-const YOUTUBE_API_URL: string = "https://www,googleapis.com/youtube/v3/search";
+const YOUTUBE_API_KEY: string = "AIzaSyDOfT_BO81aEZScosfTYMruJobmpjqNeEk";
+const YOUTUBE_API_URL: string = "https://www.googleapis.com/youtube/v3/search";
 
 @Injectable()
 export class YouTubeService {
@@ -29,9 +30,9 @@ export class YouTubeService {
             `type=video`,
             `maxResults=10`
         ].join('&');
-        const queryUrl: string = `${this.apiUrl}?${this.params}`;
+        const queryUrl: string = `${this.apiUrl}?${params}`;
         return this.http.get(queryUrl)
-            .map((reponse: Response) => {
+            .map((response: Response) => {
                 return (<any>response.json()).items.map(item => {
                     return new SearchResult({
                         id: item.id.videoId,
@@ -47,5 +48,5 @@ export class YouTubeService {
 export const youtubeServiceInjectables: Array<any> = [
     bind(YouTubeService).toClass(YouTubeService),
     bind(YOUTUBE_API_KEY).toValue(YOUTUBE_API_KEY),
-    bind(YOUTUBE_API_URL).toValue(YOOUTUBE_API_URL)
+    bind(YOUTUBE_API_URL).toValue(YOUTUBE_API_URL)
 ]

@@ -7,6 +7,8 @@ import { RouteConfig, Router } from '@angular/router-deprecated';
 import { AppState } from './app.service';
 import { Home } from './home';
 import { RouterActive } from './router-active';
+import {YoutubeSearchComponent} from "./youtube-search.component";
+import {YouTubeService} from "./youtube.service";
 
 /*
  * App Component
@@ -16,7 +18,7 @@ import { RouterActive } from './router-active';
   selector: 'app',
   pipes: [ ],
   providers: [ ],
-  directives: [ RouterActive ],
+  directives: [ RouterActive, YoutubeSearchComponent ],
   encapsulation: ViewEncapsulation.None,
   styles: [
     require('./app.css')
@@ -40,6 +42,7 @@ import { RouterActive } from './router-active';
 
     <main>
       <router-outlet></router-outlet>
+      <youtube-search></youtube-search>
     </main>
 
     <pre class="app-state">this.appState.state = {{ appState.state | json }}</pre>

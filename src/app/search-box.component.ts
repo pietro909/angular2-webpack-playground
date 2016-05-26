@@ -1,4 +1,15 @@
-import {Component} from "@angular/core";
+import {
+    Component,
+    Injectable,
+    bind,
+    OnInit,
+    ElementRef,
+    EventEmitter,
+    Inject
+} from '@angular/core';
+import {SearchResult} from "./search-result.model";
+import {Observable} from "rxjs";
+import {YouTubeService} from "./youtube.service";
 
 @Component({
     outputs: ['loading', 'results'],
@@ -12,9 +23,9 @@ export class SearchBox implements OnInit {
 
     loading: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    results: EventEmitter<SearchResults[]> = new EventEmitter<SearchResult[]>();
+    results: EventEmitter<SearchResult[]> = new EventEmitter<SearchResult[]>();
 
-    constructor(public youtube: YuouTubeService,
+    constructor(public youtube: YouTubeService,
                 private el: ElementRef) {
                 }
 
@@ -27,7 +38,7 @@ export class SearchBox implements OnInit {
             .map((query: string) => this.youtube.search(query))
             .switch()
             .subscribe(
-                (results: SearchResults[]) => {
+                (results: SearchResult[]) => {
                     this.loading.next(false);
                     this.results.next(results);
                 },
