@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component,  } from '@angular/core';
+import { FORM_DIRECTIVES } from '@angular/common';
 
 import { AppState } from '../app.service';
 import { Title } from './title';
@@ -16,7 +17,8 @@ import { XLarge } from './x-large';
   // We need to tell Angular's compiler which directives are in our template.
   // Doing so will allow Angular to attach our behavior to an element
   directives: [
-    XLarge
+    XLarge,
+    FORM_DIRECTIVES
   ],
   // We need to tell Angular's compiler which custom pipes are in our template.
   pipes: [ ],
@@ -28,6 +30,7 @@ import { XLarge } from './x-large';
 export class Home {
   // Set our default values
   localState = { value: '' };
+
   // TypeScript public modifiers
   constructor(public appState: AppState, public title: Title) {
 
