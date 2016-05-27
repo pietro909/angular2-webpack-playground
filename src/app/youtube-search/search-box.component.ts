@@ -15,7 +15,7 @@ import {YouTubeService} from "./youtube.service.ts";
     outputs: ['loading', 'results'],
     selector: 'search-box',
     template: `
-    <input type="text" class="fomr-control" placeholder="Search" autofocus>
+    <input type="text" class="form-control" placeholder="Search" autofocus>
     `
 })
 
