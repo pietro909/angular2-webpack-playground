@@ -7,9 +7,9 @@ import {
     EventEmitter,
     Inject
 } from '@angular/core';
-import {SearchResult} from "./search-result.model";
+import {SearchResult} from "./search-result.model.ts";
 import {Observable} from "rxjs";
-import {YouTubeService} from "./youtube.service";
+import {YouTubeService} from "./youtube.service.ts";
 
 @Component({
     outputs: ['loading', 'results'],
@@ -35,12 +35,13 @@ export class SearchBox implements OnInit {
             .filter((text: string) => text.length > 2)
             .debounceTime(250)
             .do(() => this.loading.next(true))
-            .map((query: string) => this.youtube.search(query))
+            .map((query: string) => this.youtube.searchName(query))
             .switch()
             .subscribe(
                 (results: SearchResult[]) => {
                     this.loading.next(false);
                     this.results.next(results);
+                    // results.map((r:SearchResult) => console.log(r.id));
                 },
                 (error: any) => {
                     console.log(error);

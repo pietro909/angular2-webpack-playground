@@ -7,8 +7,9 @@ import { RouteConfig, Router } from '@angular/router-deprecated';
 import { AppState } from './app.service';
 import { Home } from './home';
 import { RouterActive } from './router-active';
-import {YoutubeSearchComponent} from "./youtube-search.component";
-import {YouTubeService} from "./youtube.service";
+import {YoutubeSearchComponent} from "./youtube-search/youtube-search.component.ts";
+import {YouTubeService} from "./youtube-search/youtube.service.ts";
+import {ResultsCounter} from "./youtube-search/results-counter.component";
 
 /*
  * App Component
@@ -18,42 +19,19 @@ import {YouTubeService} from "./youtube.service";
   selector: 'app',
   pipes: [ ],
   providers: [ ],
-  directives: [ RouterActive, YoutubeSearchComponent ],
+  directives: [ RouterActive, YoutubeSearchComponent, ResultsCounter ],
   encapsulation: ViewEncapsulation.None,
   styles: [
     require('./app.css')
   ],
   template: `
-    <span router-active>
-      <button [routerLink]=" ['Index'] ">
-        Index
-      </button>
-    </span>
-    <span router-active>
-      <button [routerLink]=" ['Home'] ">
-        Home
-      </button>
-    </span>
-    <span router-active>
-      <button [routerLink]=" ['About'] ">
-        About
-      </button>
-    </span>
-
+    <header><results-counter></results-counter></header>
     <main>
-      <router-outlet></router-outlet>
       <youtube-search></youtube-search>
     </main>
-
-    <pre class="app-state">this.appState.state = {{ appState.state | json }}</pre>
   `
 })
-@RouteConfig([
-  { path: '/',      name: 'Index', component: Home, useAsDefault: true },
-  { path: '/home',  name: 'Home',  component: Home },
-  // Async load a component using Webpack's require with es6-promise-loader and webpack `require`
-  { path: '/about', name: 'About', loader: () => require('es6-promise!./about')('About') }
-])
+
 export class App {
   angularclassLogo = 'assets/img/angularclass-avatar.png';
   loading = false;

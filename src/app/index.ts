@@ -1,5 +1,5 @@
 // App
-import {youtubeServiceInjectables} from "./youtube.service";
+import {youtubeServiceInjectables} from "./youtube-search/youtube.service.ts";
 export * from './app.component';
 export * from './app.service';
 

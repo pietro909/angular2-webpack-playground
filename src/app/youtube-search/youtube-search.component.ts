@@ -1,9 +1,12 @@
 import {Component} from "@angular/core";
-import {SearchResultComponent} from "./search-result.component";
-import {SearchBox} from "./search-box.component";
-import {SearchResult} from "./search-result.model";
+import {SearchResultComponent} from "./search-result.component.ts";
+import {SearchBox} from "./search-box.component.ts";
+import {SearchResult} from "./search-result.model.ts";
+import {YouTubeService} from "./youtube.service";
 
 // const loadingGif: string = ((<any>window).__karma__) ? '' : require('assets/img/loading.gif');
+
+const DEFAULT_VIDEO = 20;
 
 @Component({
     selector: 'youtube-search',
@@ -25,6 +28,10 @@ import {SearchResult} from "./search-result.model";
                     (results)="updateResults($event)"
                     ></search-box>
             </div>
+            <div class="input-group input-group-lg col-md-12">
+                <label for="showMax">Max video to show</label>
+                <input id="showMax" type="number" min="0" max="50" value="${DEFAULT_VIDEO}" (change)="resizeList($event)">
+            </div>
         </div>
         <div class="row">
             <search-result
@@ -40,8 +47,17 @@ export class YoutubeSearchComponent {
 
     results: SearchResult[];
 
+    private maxSize = DEFAULT_VIDEO;
+
+    constructor(private youtube: YouTubeService) {}
+
     updateResults(results: SearchResult[]): void {
-        this.results = results;
+        this.results = results.slice(0, this.maxSize);
+    }
+
+    resizeList($event: MouseEvent): void {
+        this.maxSize = $event.srcElement.value;
+        this.results = this.youtube.searchResults.getValue().slice(0, this.maxSize);
     }
 
 }

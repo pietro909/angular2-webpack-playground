@@ -115,7 +115,7 @@ angular2-webpack-starter/
  │   └──assets/                * static assets are served here
  │       ├──icon/              * our list of icons from www.favicon-generator.org
  │       ├──service-worker.js  * ignore this. Web App service worker that's not complete yet
- │       ├──robots.txt         * for search engines to crawl your website
+ │       ├──robots.txt         * for searchName engines to crawl your website
  │       └──human.txt          * for humans to know who the developers are
  │
  │
