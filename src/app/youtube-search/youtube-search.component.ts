@@ -5,6 +5,8 @@ import {SearchResult} from "./search-result.model.ts";
 import {YouTubeService} from "./youtube.service";
 import {ListMaxSize} from "./list-max-size.component";
 import {ProximitySelector, LocationData} from "./proximity-selector.component";
+import {DescribeLocation} from "./describe-location.component";
+import {Subject} from "rxjs/Subject";
 
 // const loadingGif: string = ((<any>window).__karma__) ? '' : require('assets/img/loading.gif');
 
@@ -12,9 +14,12 @@ const DEFAULT_VIDEO = 20;
 
 @Component({
     selector: 'youtube-search',
-    directives: [SearchBox, SearchResultComponent, ListMaxSize, ProximitySelector],
+    directives: [SearchBox, SearchResultComponent, ListMaxSize, ProximitySelector, DescribeLocation],
     template: `
     <div class="container">
+    
+    <!-- todo: remove from here -->
+        <describe-location [locationData]="currentLocation"></describe-location>
 
         <div class="row">
             <div class="col-md-6">
@@ -52,6 +57,8 @@ const DEFAULT_VIDEO = 20;
 export class YoutubeSearchComponent {
 
     results: SearchResult[];
+    
+    currentLocation: Subject<LocationData> = new Subject<LocationData>();
 
     private maxSize = DEFAULT_VIDEO;
 
@@ -67,6 +74,7 @@ export class YoutubeSearchComponent {
     }
 
     setLocation(locationData: LocationData) {
+        this.currentLocation.next(locationData);
         this.youtube.setLocation(locationData);
     }
 

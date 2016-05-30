@@ -17,6 +17,7 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import replace = require("core-js/fn/symbol/replace");
 import {LocationData} from "./proximity-selector.component";
 
+// please replace with your own key or my quota will get full
 const YOUTUBE_API_KEY: string = "AIzaSyDOfT_BO81aEZScosfTYMruJobmpjqNeEk";
 const YOUTUBE_API_URL: string = "https://www.googleapis.com/youtube/v3/search";
 const LOCATION_TEMPLATE = 'location={latitude},{longitude}&locationRadius={radius}km';
