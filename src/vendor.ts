@@ -16,6 +16,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 
 import 'bootstrap-loader';
+import 'lodash';
 
 if ('production' === ENV) {
   // Production

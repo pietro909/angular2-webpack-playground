@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs';
+import * as _ from "lodash";
 import {SearchResult} from "./search-result.model.ts";
 import {ResultsCounter} from "./results-counter.component";
 import {Subject} from "rxjs/Subject";
@@ -35,36 +36,43 @@ export class YouTubeService {
                  }
 
     searchName(name: string): Observable<SearchResult[]> {
-        this.currentSearchName = name;
-        let params: string = [
-            `q=${name}`,
-            `key=${this.apiKey}`,
-            `part=snippet`,
-            `type=video`,
-            `maxResults=${this.maxResults}`
-        ].join('&');
-        
-        if (this.currentSearchLocation) {
-            const locationString = LOCATION_TEMPLATE
-                .replace(/\{latitude\}/g, this.currentSearchLocation.latitude)
-                .replace(/\{longitude\}/g, this.currentSearchLocation.longitude)
-                .replace(/\{radius\}/g, this.currentSearchLocation.radius);
-            params += `&${locationString}`;
+        if (_.isString(name) && name.length > 2) {
+            this.currentSearchName = name;
+            let params:string = [
+                `q=${name}`,
+                `key=${this.apiKey}`,
+                `part=snippet`,
+                `type=video`,
+                `maxResults=${this.maxResults}`
+            ].join('&');
+
+            if (this.currentSearchLocation) {
+                const locationString = LOCATION_TEMPLATE
+                    .replace(/\{latitude\}/g, this.currentSearchLocation.latitude)
+                    .replace(/\{longitude\}/g, this.currentSearchLocation.longitude)
+                    .replace(/\{radius\}/g, this.currentSearchLocation.radius);
+                params += `&${locationString}`;
+            }
+
+            this.doSearch(params);
         }
-        
-        this.doSearch(params);
 
         return this.searchResults;
 
     }
-    
-    searchLocation(location: LocationData): Observable<SearchResult[]> {
-        console.log(location);
+
+    setLocation(location: LocationData): Observable<SearchResult[]> {
         this.currentSearchLocation = location;
         this.searchName(this.currentSearchName);
         return this.searchResults;
     }
-    
+
+    unsetLocation(): Observable<SearchResult[]> {
+        this.currentSearchLocation = null;
+        this.searchName(this.currentSearchName);
+        return this.searchResults;
+    }
+
     private doSearch(params: string): void {
         const queryUrl: string = `${this.apiUrl}?${params}`;
         this.http.get(queryUrl)

@@ -25,7 +25,14 @@ import {ResultsCounter} from "./youtube-search/results-counter.component";
     require('./app.css')
   ],
   template: `
-    <header><results-counter></results-counter></header>
+    <header>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <h1 class="pull-left">YouTube search component</h1>
+                <results-counter class="pull-right"></results-counter>
+            </div>
+        </nav>
+    </header>    
     <main>
       <youtube-search></youtube-search>
     </main>

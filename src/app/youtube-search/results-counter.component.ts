@@ -5,15 +5,9 @@ import {SearchResult} from "./search-result.model";
 @Component({
     selector: 'results-counter',
     template: `
-    <nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <p class="navbar-text navbar-right">
-            <button class="btn-primary" type="button">
-                Found <span class="badge">{{unreadMessagesCount}}</span> videos
-            </button>
-        </p>
-    </div>
-    </nav>
+        <button class="btn-primary" type="button">
+            Found <span class="badge">{{unreadMessagesCount}}</span> videos
+        </button>
     `
 })
 export class ResultsCounter implements OnInit {
