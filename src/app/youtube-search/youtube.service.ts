@@ -30,6 +30,7 @@ export class YouTubeService {
     private maxResults = 50;
     private currentSearchName: string;
     private currentSearchLocation: LocationData;
+    private currentSearchRadius: number;
 
     constructor( public http: Http,
                  @Inject(YOUTUBE_API_KEY) private apiKey: string,
@@ -51,7 +52,7 @@ export class YouTubeService {
                 const locationString = LOCATION_TEMPLATE
                     .replace(/\{latitude\}/g, this.currentSearchLocation.latitude)
                     .replace(/\{longitude\}/g, this.currentSearchLocation.longitude)
-                    .replace(/\{radius\}/g, this.currentSearchLocation.radius);
+                    .replace(/\{radius\}/g, this.currentSearchRadius);
                 params += `&${locationString}`;
             }
 
@@ -62,15 +63,14 @@ export class YouTubeService {
 
     }
 
-    setLocation(location: LocationData): Observable<SearchResult[]> {
+    setLocation(location: LocationData, radius: number): Observable<SearchResult[]> {
         this.currentSearchLocation = location;
-        this.searchName(this.currentSearchName);
+        this.currentSearchRadius = radius;
         return this.searchResults;
     }
 
     unsetLocation(): Observable<SearchResult[]> {
         this.currentSearchLocation = null;
-        this.searchName(this.currentSearchName);
         return this.searchResults;
     }
 

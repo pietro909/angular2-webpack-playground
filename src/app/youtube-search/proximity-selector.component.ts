@@ -10,15 +10,15 @@ import {
     Output
 } from '@angular/core';
 import {Observable} from "rxjs/Observable";
+
 export interface LocationData {
     latitude: number,
-    longitude: number,
-    radius: number
+    longitude: number
 }
 
 @Component({
     selector: "proximity-selector",
-    outputs: ["locationChange"],
+    outputs: ["locationChange", "radiusChange"],
     inputs: ["defaultRadius"],
     template: `
     <div class="input-group">
@@ -30,8 +30,7 @@ export interface LocationData {
     <div class="input-group">
         <label for="locationRadius">Radius</label>
         <input type="range" min="1" max="100" value="{{defaultRadius}}"
-            [disabled]="!active"
-            [(ngModel)]="currentLocation.radius" (change)="setLocation()"> 
+            [disabled]="!active" (change)="onRadius($event)"> 
     </div>
     `
 })
@@ -43,40 +42,31 @@ export class ProximitySelector {
 
     defaultRadius: string;
 
-    @Input()
-    currentLocation: LocationData = {
-        latitude: null,
-        longitude: null,
-        radius: 50
-    };
-
     locationChange: EventEmitter<LocationData> = new EventEmitter<LocationData>();
 
-    private getCurrentPosition: () => any;
+    radiusChange: EventEmitter<number> = new EventEmitter<number>();
 
     constructor(private el: ElementRef) {
-        if (typeof navigator.geolocation === "undefined") {
-            this.disabled = true;
-        } else{
-            this.disabled = false;
-        }
+        this.disabled = typeof navigator.geolocation === "undefined";
     }
-
+    
     turnOnOffLocation($event: any) {
         this.active = $event.target.checked;
         if (this.active) {
-            this.setLocation();
-        } else {
+            navigator.geolocation.getCurrentPosition((position: any) => {
+                this.locationChange.next({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                });
+            });
+         } else {
             this.locationChange.next(null);
         }
     }
 
-    setLocation() {
-        navigator.geolocation.getCurrentPosition((position: any) => {
-            this.currentLocation.latitude = position.coords.latitude;
-            this.currentLocation.longitude = position.coords.longitude;
-            this.locationChange.next(this.currentLocation);
-        });
+    onRadius($event: any) {
+        const radius = parseInt($event.target.value, 10);
+        this.radiusChange.next(radius);
     }
 
 }

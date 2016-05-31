@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, EventEmitter, OnInit} from "@angular/core";
 import {SearchResultComponent} from "./search-result.component.ts";
 import {SearchBox} from "./search-box.component.ts";
 import {SearchResult} from "./search-result.model.ts";
@@ -7,6 +7,10 @@ import {ListMaxSize} from "./list-max-size.component";
 import {ProximitySelector, LocationData} from "./proximity-selector.component";
 import {DescribeLocation} from "./describe-location.component";
 import {Subject} from "rxjs/Subject";
+import { Store } from '@ngrx/store';
+import {CurrentSearch, SEARCH_OPTIONS} from "../search.reducer";
+import { Action } from '@ngrx/store';
+import {Observable} from "rxjs/Observable";
 
 // const loadingGif: string = ((<any>window).__karma__) ? '' : require('assets/img/loading.gif');
 
@@ -15,6 +19,8 @@ const DEFAULT_VIDEO = 20;
 @Component({
     selector: 'youtube-search',
     directives: [SearchBox, SearchResultComponent, ListMaxSize, ProximitySelector, DescribeLocation],
+    inputs: ['store', 'results'],
+    outputs: [ ],
     template: `
     <div class="container">
     
@@ -26,7 +32,7 @@ const DEFAULT_VIDEO = 20;
                 <div class="input-group input-group-lg">
                     <search-box
                         (loading)="loading = $event"
-                        (results)="updateResults($event)"></search-box>
+                        (textChange)="setText($event)"></search-box>
                 </div>
                 <div class="input-group input-group-lg">
                    <list-max-size
@@ -38,6 +44,7 @@ const DEFAULT_VIDEO = 20;
                 <div class="input-group input-group-lg">
                     <proximity-selector
                         (locationChange)="setLocation($event)"
+                        (radiusChange)="setRadius($event)"
                         [defaultRadius]="50"></proximity-selector>
                 </div>
             </div>
@@ -45,8 +52,8 @@ const DEFAULT_VIDEO = 20;
 
         <div class="row">
             <search-result
-                *ngFor="let result of results"
-                [result]="result">
+                *ngFor="let video of videos"
+                [result]="video">
             </search-result>
         </div>
 
@@ -54,28 +61,70 @@ const DEFAULT_VIDEO = 20;
     `
 })
 
-export class YoutubeSearchComponent {
+export class YoutubeSearchComponent implements OnInit {
 
-    results: SearchResult[];
-    
     currentLocation: Subject<LocationData> = new Subject<LocationData>();
+
+    store: Store<CurrentSearch>
+
+    videos: SearchResult[];
+
+    results: Observable<SearchResult[]>;
 
     private maxSize = DEFAULT_VIDEO;
 
-    constructor(private youtube: YouTubeService) {}
+    ngOnInit() {
+        this.results.subscribe((videos) => this.videos = videos);
+    }
 
     updateResults(results: SearchResult[]): void {
-        this.results = results.slice(0, this.maxSize);
+        // this.results = results.slice(0, this.maxSize);
     }
 
     resizeList(maxSize: number): void {
         this.maxSize = maxSize;
-        this.results = this.youtube.searchResults.getValue().slice(0, this.maxSize);
+        // this.results = this.youtube.searchResults.getValue().slice(0, this.maxSize);
+    }
+
+    setText(text: string) {
+        this.store.dispatch({
+            type: SEARCH_OPTIONS.TEXT,
+            payload: {
+                text: text
+            }
+        })
     }
 
     setLocation(locationData: LocationData) {
-        this.currentLocation.next(locationData);
-        this.youtube.setLocation(locationData);
+        // this.currentLocation.next(locationData);
+        let message: Action;
+        if (locationData === null) {
+            message = {
+                type: SEARCH_OPTIONS.LOCATION,
+                payload: {
+                    latitude: null,
+                    longitude:null 
+                }
+            }
+        } else {
+            message= {
+                type: SEARCH_OPTIONS.LOCATION,
+                payload: {
+                    latitude: locationData.latitude,
+                    longitude: locationData.longitude
+                }
+            }
+        }
+        this.store.dispatch(message);
+    }
+
+    setRadius(radius: number) {
+        this.store.dispatch({
+            type: SEARCH_OPTIONS.RADIUS,
+            payload: {
+                radius: radius
+            }
+        });
     }
 
 }

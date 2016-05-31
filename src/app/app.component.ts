@@ -10,6 +10,13 @@ import { RouterActive } from './router-active';
 import {YoutubeSearchComponent} from "./youtube-search/youtube-search.component.ts";
 import {YouTubeService} from "./youtube-search/youtube.service.ts";
 import {ResultsCounter} from "./youtube-search/results-counter.component";
+import { Action } from '@ngrx/store';
+import {CurrentSearch} from "./search.reducer";
+import { Store } from '@ngrx/store';
+import {Observable} from "rxjs/Observable";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {SearchResult} from "./youtube-search/search-result.model";
+import {stat} from "fs";
 
 /*
  * App Component
@@ -34,7 +41,7 @@ import {ResultsCounter} from "./youtube-search/results-counter.component";
         </nav>
     </header>    
     <main>
-      <youtube-search></youtube-search>
+        <youtube-search [store]="store" [results]="results"></youtube-search>
     </main>
   `
 })
@@ -45,14 +52,37 @@ export class App {
   name = 'Angular 2 Webpack Starter';
   url = 'https://twitter.com/AngularClass';
 
+  results: BehaviorSubject<SearchResult[]> = new BehaviorSubject<SearchResult[]>([]);
+  private currentSearch: Observable<CurrentSearch>;
+
   constructor(
-    public appState: AppState) {
+    public youtube: YouTubeService,
+    public store: Store<CurrentSearch>) {
+    this.currentSearch = this.store.select('currentSearch');
 
   }
 
   ngOnInit() {
-    console.log('Initial App State', this.appState.state);
+
+    // this is the HUB dispatching messages
+    this.currentSearch.subscribe((state: CurrentSearch) => {
+      console.log(state);
+      if (state.location.latitude !== null) {
+        const radius = state.radius | 50;
+        this.youtube.setLocation({
+          latitude: state.location.latitude,
+          longitude: state.location.longitude
+        }, radius);
+      } else {
+        this.youtube.unsetLocation();
+      }
+      this.youtube.searchName(state.text);
+    });
+
+    this.youtube.searchResults.subscribe((results: SearchResult[]) => this.results.next(results));
+
   }
+
 
 }
 
