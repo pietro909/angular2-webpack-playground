@@ -1,15 +1,11 @@
 import {
     Component,
-    Injectable,
-    bind,
     OnInit,
     ElementRef,
     EventEmitter,
-    Inject
+    Output
 } from '@angular/core';
-import {SearchResult} from "./search-result.model.ts";
 import {Observable} from "rxjs";
-import {YouTubeService} from "./youtube.service.ts";
 
 @Component({
     outputs: ['textChange'],
@@ -21,6 +17,7 @@ import {YouTubeService} from "./youtube.service.ts";
 
 export class SearchBox implements OnInit {
 
+    // @Output()
     textChange: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(private el: ElementRef) {}

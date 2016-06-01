@@ -17,6 +17,7 @@ import {Observable} from "rxjs/Observable";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {SearchResult} from "./youtube-search/search-result.model";
 import {stat} from "fs";
+import {SearchResultComponent, ListSize} from "./youtube-search/search-result.component";
 
 /*
  * App Component
@@ -26,7 +27,7 @@ import {stat} from "fs";
   selector: 'app',
   pipes: [ ],
   providers: [ ],
-  directives: [ RouterActive, YoutubeSearchComponent, ResultsCounter ],
+  directives: [ RouterActive, YoutubeSearchComponent, ResultsCounter, SearchResultComponent ],
   encapsulation: ViewEncapsulation.None,
   styles: [
     require('./app.css')
@@ -36,28 +37,46 @@ import {stat} from "fs";
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <h1 class="pull-left">YouTube search component</h1>
-                <results-counter class="pull-right"></results-counter>
+                <results-counter 
+                    [results]="results"
+                    class="pull-right"></results-counter>
             </div>
         </nav>
     </header>    
     <main>
-        <youtube-search [store]="store" [results]="results"></youtube-search>
+        <div class="container">
+            <describe-location [locationData]="currentLocation"></describe-location>
+            <div class="row">
+                <youtube-search [store]="store" ></youtube-search>
+            </div>
+            <div class="row">
+                <search-result
+                    [results]="results" [listSize]="listSize">
+                </search-result>
+            </div>
+        </div>
     </main>
   `
 })
 
 export class App {
-  angularclassLogo = 'assets/img/angularclass-avatar.png';
   loading = false;
   name = 'Angular 2 Webpack Starter';
   url = 'https://twitter.com/AngularClass';
+  
+  listSize: ListSize = {
+    defaultValue: 20,
+    min: 0,
+    max: 50
+  }
 
   results: BehaviorSubject<SearchResult[]> = new BehaviorSubject<SearchResult[]>([]);
+  // results: Observable<SearchResult[]> = new <SearchResult[]>([]);
   private currentSearch: Observable<CurrentSearch>;
 
   constructor(
-    public youtube: YouTubeService,
-    public store: Store<CurrentSearch>) {
+      public youtube: YouTubeService,
+      public store: Store<CurrentSearch>) {
     this.currentSearch = this.store.select('currentSearch');
 
   }
@@ -66,7 +85,6 @@ export class App {
 
     // this is the HUB dispatching messages
     this.currentSearch.subscribe((state: CurrentSearch) => {
-      console.log(state);
       if (state.location.latitude !== null) {
         const radius = state.radius | 50;
         this.youtube.setLocation({
@@ -76,20 +94,16 @@ export class App {
       } else {
         this.youtube.unsetLocation();
       }
+      this.loading = true;
       this.youtube.searchName(state.text);
     });
 
-    this.youtube.searchResults.subscribe((results: SearchResult[]) => this.results.next(results));
+    this.youtube.searchResults.subscribe((results: SearchResult[]) => {
+      this.loading = false;
+      console.log(`result appe!`);
+      this.results.next(results)
+    });
 
   }
 
-
 }
-
-/*
- * Please review the https://github.com/AngularClass/angular2-examples/ repo for
- * more angular app examples that you may copy/paste
- * (The examples may not be updated as quickly. Please open an issue on github for us to update it)
- * For help or questions please contact us at @AngularClass on twitter
- * or our chat on Slack at https://AngularClass.com/slack-join
- */

@@ -1,15 +1,7 @@
 import {
     Component,
-    Injectable,
-    bind,
-    OnInit,
-    ElementRef,
     EventEmitter,
-    Inject,
-    Input,
-    Output
 } from '@angular/core';
-import {Observable} from "rxjs/Observable";
 
 export interface LocationData {
     latitude: number,
@@ -46,7 +38,7 @@ export class ProximitySelector {
 
     radiusChange: EventEmitter<number> = new EventEmitter<number>();
 
-    constructor(private el: ElementRef) {
+    constructor() {
         this.disabled = typeof navigator.geolocation === "undefined";
     }
     

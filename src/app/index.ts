@@ -6,7 +6,7 @@ export * from './app.component';
 export * from './app.service';
 
 import { AppState } from './app.service';
-import {locationServiceInjectables} from "./youtube-search/location.service";
+import {locationServiceInjectables} from "./location/location.service";
 import {searchReducer} from "./search.reducer";
 
 // Application wide providers

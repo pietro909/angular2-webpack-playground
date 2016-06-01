@@ -1,27 +1,28 @@
-import {Component, OnInit} from '@angular/core';
-import {YouTubeService} from './youtube.service';
-import {SearchResult} from "./search-result.model";
+import {Component, OnInit, Input} from '@angular/core';
+import {Observable} from "rxjs/Rx";
 
+/**
+ * Shows a badge with the size of resuls
+ */
 @Component({
     selector: 'results-counter',
+    inputs: [ 'results' ],
     template: `
-        <button class="btn-primary" type="button">
+        <div class="btn-primary" type="button">
             Found <span class="badge">{{unreadMessagesCount}}</span> videos
-        </button>
+        </div>
     `
 })
 export class ResultsCounter implements OnInit {
+    
+    @Input()
+    results: Observable<any[]>;
 
     unreadMessagesCount: number;
 
-    constructor(public youtube: YouTubeService) {
+    ngOnInit(): void {
+        this.results
+            .subscribe((results: any) => this.unreadMessagesCount = results.length);
     }
 
-    ngOnInit(): void {
-        this.youtube.searchResults
-            .subscribe((results: SearchResult[]) => {
-                // results.map((r:SearchResult) => console.log(r.id));
-                this.unreadMessagesCount = results.length;
-            });
-    }
 }

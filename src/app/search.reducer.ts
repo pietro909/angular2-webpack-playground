@@ -1,5 +1,5 @@
 import { ActionReducer, Action } from '@ngrx/store';
-import {LocationData} from "./youtube-search/proximity-selector.component";
+import {LocationData} from "./location/proximity-selector.component";
 
 export enum SEARCH_OPTIONS {
     TEXT,

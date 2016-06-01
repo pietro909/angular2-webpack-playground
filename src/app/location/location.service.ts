@@ -10,8 +10,8 @@ import {
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs';
 import * as _ from "lodash";
-import {SearchResult} from "./search-result.model.ts";
-import {ResultsCounter} from "./results-counter.component";
+import {SearchResult} from "../youtube-search/search-result.model.ts";
+import {ResultsCounter} from "../youtube-search/results-counter.component";
 import {Subject} from "rxjs/Subject";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import replace = require("core-js/fn/symbol/replace");

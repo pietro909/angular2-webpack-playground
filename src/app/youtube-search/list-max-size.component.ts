@@ -1,34 +1,32 @@
 import {
     Component,
-    Injectable,
-    bind,
-    OnInit,
-    ElementRef,
-    EventEmitter,
-    Inject
+    EventEmitter, Input, Output
 } from '@angular/core';
-import {Observable} from "rxjs/Observable";
 
 @Component({
     selector: "list-max-size",
-    inputs: ["defaultSize"],
+    inputs: ["sizes"],
     outputs: ["size"],
     template: `
     <label for="showMax">Max video to show</label>
-    <input id="showMax" type="number" min="0" max="50" value="{{defaultSize}}" >
+    <input id="showMax" type="number" 
+        min="{{sizes.min}}" max="{{sizes.max}}" value="{{sizes.defaultValue}}" 
+        (click)="changeMax($event)">
     `
 })
-export class ListMaxSize implements OnInit {
-    
+export class ListMaxSize {
+
+    @Input()
+    sizes: ListMaxSize;
+
+    // @Output()
     size: EventEmitter<number> = new EventEmitter<number>();
-    
-    constructor(private el: ElementRef) {}
-    
-    ngOnInit() {
-        Observable.fromEvent(this.el.nativeElement, "change")
-            .map(($event: any) => $event.target.value)
-            .subscribe((limit: number) => this.size.next(limit));
+
+    changeMax($event: any) {
+        const value = parseInt($event.target.value, 10);
+        this.size.emit(value);
     }
+
 }
 
 
