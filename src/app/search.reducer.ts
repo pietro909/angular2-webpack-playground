@@ -24,6 +24,7 @@ export const searchReducer: ActionReducer<CurrentSearch> = (state: CurrentSearch
                 newState.location.longitude = action.payload.longitude;
             break;
         case SEARCH_OPTIONS.RADIUS:
+                console.log(`change radius to ${action.payload.radius}`);
                 newState.radius = action.payload.radius;
              break;
         case `@ngrx/store/init`:

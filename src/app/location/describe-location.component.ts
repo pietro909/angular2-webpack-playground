@@ -3,39 +3,37 @@ import {LocationData} from "./proximity-selector.component";
 import {Observable} from "rxjs/Observable";
 import {LocationService} from "./location.service";
 
-
+export interface LocationInfo extends LocationData {
+    radius: number
+}
 
 @Component({
     selector: 'describe-location',
     inputs: ['locationData'],
     template: `
-    <p *ngIf="location">Within {{location.radius}}km from {{location.name}}</p>
+    <p *ngIf="location.name">Within {{location.radius}}km from {{location.name}}</p>
     `
 })
 export class DescribeLocation implements OnInit {
 
-    locationData: Observable<LocationData>;
+    locationData: Observable<LocationInfo>;
 
-    location: any = null;
-    
+    location: any = {};
+
     constructor(private locationService: LocationService) {}
 
     ngOnInit() {
         this.locationData
-            .subscribe((locationData: LocationData) => {
+            .subscribe((locationData: LocationInfo) => {
                 if (locationData) {
-                    console.log(locationData);
-                    // call GoogleAPI to detect place and return it
-                    // todo: put this in a service
-                    // https://maps.googleapis.com/maps/api/place/nearbysearch/output?parameters
-                    // this.locationService.searchPlace(locationData)
-                    this.location = {
-                        radius : locationData.radius
-                    }
+                    this.location.radius = locationData.radius;
+                    this.locationService.searchPlace(locationData)
                 } else {
-                    this.location = null;
+                    this.location = {};
                 }
-            })
+            });
+        this.locationService.searchResults
+            .subscribe((name) => this.location.name = name);
     }
 
 }

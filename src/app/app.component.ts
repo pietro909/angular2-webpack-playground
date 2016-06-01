@@ -18,6 +18,7 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {SearchResult} from "./youtube-search/search-result.model";
 import {stat} from "fs";
 import {SearchResultComponent, ListSize} from "./youtube-search/search-result.component";
+import {LocationInfo, DescribeLocation} from "./location/describe-location.component";
 
 /*
  * App Component
@@ -27,7 +28,7 @@ import {SearchResultComponent, ListSize} from "./youtube-search/search-result.co
   selector: 'app',
   pipes: [ ],
   providers: [ ],
-  directives: [ RouterActive, YoutubeSearchComponent, ResultsCounter, SearchResultComponent ],
+  directives: [ RouterActive, YoutubeSearchComponent, ResultsCounter, SearchResultComponent, DescribeLocation ],
   encapsulation: ViewEncapsulation.None,
   styles: [
     require('./app.css')
@@ -36,6 +37,7 @@ import {SearchResultComponent, ListSize} from "./youtube-search/search-result.co
     <header>
         <nav class="navbar navbar-default">
             <div class="container-fluid">
+                <describe-location [locationData]="currentLocation"></describe-location>
                 <h1 class="pull-left">YouTube search component</h1>
                 <results-counter 
                     [results]="results"
@@ -45,7 +47,6 @@ import {SearchResultComponent, ListSize} from "./youtube-search/search-result.co
     </header>    
     <main>
         <div class="container">
-            <describe-location [locationData]="currentLocation"></describe-location>
             <div class="row">
                 <youtube-search [store]="store" ></youtube-search>
             </div>
@@ -69,9 +70,11 @@ export class App {
     min: 0,
     max: 50
   }
+  
+  currentLocation: BehaviorSubject<LocationInfo> = new BehaviorSubject<LocationInfo>(null);
 
   results: BehaviorSubject<SearchResult[]> = new BehaviorSubject<SearchResult[]>([]);
-  // results: Observable<SearchResult[]> = new <SearchResult[]>([]);
+  
   private currentSearch: Observable<CurrentSearch>;
 
   constructor(
@@ -86,12 +89,18 @@ export class App {
     // this is the HUB dispatching messages
     this.currentSearch.subscribe((state: CurrentSearch) => {
       if (state.location.latitude !== null) {
-        const radius = state.radius | 50;
+        const radius = state.radius || 50;
         this.youtube.setLocation({
           latitude: state.location.latitude,
           longitude: state.location.longitude
         }, radius);
+        this.currentLocation.next({
+          latitude: state.location.latitude,
+          longitude: state.location.longitude,
+          radius: radius
+        });
       } else {
+        this.currentLocation.next(null);
         this.youtube.unsetLocation();
       }
       this.loading = true;
@@ -100,7 +109,6 @@ export class App {
 
     this.youtube.searchResults.subscribe((results: SearchResult[]) => {
       this.loading = false;
-      console.log(`result appe!`);
       this.results.next(results)
     });
 

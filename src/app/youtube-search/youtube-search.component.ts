@@ -1,8 +1,6 @@
-import {Component, EventEmitter, OnInit} from "@angular/core";
+import {Component, EventEmitter, OnInit, Input} from "@angular/core";
 import {SearchResultComponent} from "./search-result.component.ts";
 import {SearchBox} from "./search-box.component.ts";
-import {SearchResult} from "./search-result.model.ts";
-import {YouTubeService} from "./youtube.service";
 import {ListMaxSize} from "./list-max-size.component";
 import {ProximitySelector, LocationData} from "../location/proximity-selector.component";
 import {DescribeLocation} from "../location/describe-location.component";
@@ -10,11 +8,6 @@ import {Subject} from "rxjs/Subject";
 import { Store } from '@ngrx/store';
 import {CurrentSearch, SEARCH_OPTIONS} from "../search.reducer";
 import { Action } from '@ngrx/store';
-import {Observable} from "rxjs/Observable";
-
-// const loadingGif: string = ((<any>window).__karma__) ? '' : require('assets/img/loading.gif');
-
-const DEFAULT_VIDEO = 20;
 
 @Component({
     selector: 'youtube-search',
@@ -24,6 +17,7 @@ const DEFAULT_VIDEO = 20;
     template: `
     <div class="col-md-6">
         <div class="input-group input-group-lg">
+        <h1></h1>
             <search-box
                 (loading)="loading = $event"
                 (textChange)="setText($event)"></search-box>
@@ -42,9 +36,8 @@ const DEFAULT_VIDEO = 20;
 
 export class YoutubeSearchComponent {
 
-    currentLocation: Subject<LocationData> = new Subject<LocationData>();
-
-    store: Store<CurrentSearch>
+    @Input()
+    store: Store<CurrentSearch>;
 
     setText(text: string) {
         this.store.dispatch({
@@ -56,7 +49,6 @@ export class YoutubeSearchComponent {
     }
 
     setLocation(locationData: LocationData) {
-        // this.currentLocation.next(locationData);
         let message: Action;
         if (locationData === null) {
             message = {
