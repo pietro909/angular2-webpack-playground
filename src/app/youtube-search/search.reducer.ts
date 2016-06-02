@@ -1,11 +1,14 @@
 import { ActionReducer, Action } from '@ngrx/store';
-import {LocationData} from "./location/proximity-selector.component";
+import {LocationData} from "../location/proximity-selector.component";
+import * as _ from 'lodash';
 
 export enum SEARCH_OPTIONS {
     TEXT,
     LOCATION,
     RADIUS
 }
+
+export type SearchOptions = 'TEXT' | 'LOCATION' | 'RADIUS';
 
 export interface CurrentSearch {
     text: string;
@@ -16,14 +19,14 @@ export interface CurrentSearch {
 export const searchReducer: ActionReducer<CurrentSearch> = (state: CurrentSearch, action: Action) => {
     let newState = _.cloneDeep(state);
     switch (action.type) {
-        case SEARCH_OPTIONS.TEXT:
+        case 'TEXT':
                 newState.text = action.payload.text;
             break;
-        case SEARCH_OPTIONS.LOCATION:
+        case 'LOCATION':
                 newState.location.latitude = action.payload.latitude;
                 newState.location.longitude = action.payload.longitude;
             break;
-        case SEARCH_OPTIONS.RADIUS:
+        case 'RADIUS':
                 console.log(`change radius to ${action.payload.radius}`);
                 newState.radius = action.payload.radius;
              break;
@@ -35,7 +38,7 @@ export const searchReducer: ActionReducer<CurrentSearch> = (state: CurrentSearch
                     longitude: null
                 },
                 radius: null
-            }
+            };
             break;
         default:
             throw new Error(`illegal action type ${action.type}`);

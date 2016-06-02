@@ -9,9 +9,9 @@ import { Home } from './home';
 import { RouterActive } from './router-active';
 import {YoutubeSearchComponent} from "./youtube-search/youtube-search.component.ts";
 import {YouTubeService} from "./youtube-search/youtube.service.ts";
-import {ResultsCounter} from "./youtube-search/results-counter.component";
+import {ResultsCounter} from "./generic/results-counter.component";
 import { Action } from '@ngrx/store';
-import {CurrentSearch} from "./search.reducer";
+import {CurrentSearch} from "./youtube-search/search.reducer";
 import { Store } from '@ngrx/store';
 import {Observable} from "rxjs/Observable";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
@@ -80,7 +80,7 @@ export class App {
   constructor(
       public youtube: YouTubeService,
       public store: Store<CurrentSearch>) {
-    this.currentSearch = this.store.select('currentSearch');
+    this.currentSearch = this.store.select<CurrentSearch>('currentSearch');
 
   }
 

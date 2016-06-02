@@ -7,7 +7,7 @@ export * from './app.service';
 
 import { AppState } from './app.service';
 import {locationServiceInjectables} from "./location/location.service";
-import {searchReducer} from "./search.reducer";
+import {searchReducer} from "./youtube-search/search.reducer";
 
 // Application wide providers
 export const APP_PROVIDERS = [

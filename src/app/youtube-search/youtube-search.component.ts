@@ -1,12 +1,12 @@
 import {Component, EventEmitter, OnInit, Input} from "@angular/core";
 import {SearchResultComponent} from "./search-result.component.ts";
 import {SearchBox} from "./search-box.component.ts";
-import {ListMaxSize} from "./list-max-size.component";
+import {ListMaxSize} from "../generic/list-max-size.component";
 import {ProximitySelector, LocationData} from "../location/proximity-selector.component";
 import {DescribeLocation} from "../location/describe-location.component";
 import {Subject} from "rxjs/Subject";
 import { Store } from '@ngrx/store';
-import {CurrentSearch, SEARCH_OPTIONS} from "../search.reducer";
+import {CurrentSearch, SEARCH_OPTIONS} from "./search.reducer";
 import { Action } from '@ngrx/store';
 
 @Component({
@@ -41,7 +41,7 @@ export class YoutubeSearchComponent {
 
     setText(text: string) {
         this.store.dispatch({
-            type: SEARCH_OPTIONS.TEXT,
+            type: 'TEXT',
             payload: {
                 text: text
             }
@@ -52,7 +52,7 @@ export class YoutubeSearchComponent {
         let message: Action;
         if (locationData === null) {
             message = {
-                type: SEARCH_OPTIONS.LOCATION,
+                type: 'LOCATION',
                 payload: {
                     latitude: null,
                     longitude:null
@@ -60,7 +60,7 @@ export class YoutubeSearchComponent {
             }
         } else {
             message= {
-                type: SEARCH_OPTIONS.LOCATION,
+                type: 'LOCATION',
                 payload: {
                     latitude: locationData.latitude,
                     longitude: locationData.longitude
@@ -72,7 +72,7 @@ export class YoutubeSearchComponent {
 
     setRadius(radius: number) {
         this.store.dispatch({
-            type: SEARCH_OPTIONS.RADIUS,
+            type: 'RADIUS',
             payload: {
                 radius: radius
             }

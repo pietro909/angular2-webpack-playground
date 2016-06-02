@@ -1,7 +1,7 @@
 import {Component, Input, Output, OnInit} from "@angular/core";
 import {SearchResult} from "./search-result.model.ts";
 import {Observable, BehaviorSubject} from "rxjs/Rx";
-import {ListMaxSize} from "./list-max-size.component";
+import {ListMaxSize} from "../generic/list-max-size.component";
 
 export interface ListSize {
     defaultValue: number;

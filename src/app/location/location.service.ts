@@ -5,10 +5,11 @@ import {
 } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs';
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import replace = require("core-js/fn/symbol/replace");
-import {LocationData} from "./proximity-selector.component";
-const LOCATION_API_URL: string = "http://maps.googleapis.com/maps/api/geocode/json?";
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import replace = require('core-js/fn/symbol/replace');
+import {LocationData} from './proximity-selector.component';
+
+const LOCATION_API_URL: string = 'http://maps.googleapis.com/maps/api/geocode/json?';
 const LOCATION_TEMPLATE = 'latlng={latitude},{longitude}';
 
 @Injectable()
@@ -37,7 +38,7 @@ export class LocationService {
                 if (place) {
                     return place.formatted_address;
                 } else {
-                    return "unknown";
+                    return 'unknown';
                 }
             })
             .subscribe((r: string) => this.searchResults.next(r));
